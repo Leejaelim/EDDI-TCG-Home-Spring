@@ -33,6 +33,7 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-webmvc'
 
     implementation 'me.paulschwarz:spring-dotenv:3.0.0'
+    implementation 'org.springframework.boot:spring-boot-starter-validation'
 
     testImplementation 'org.testcontainers:testcontainers-junit-jupiter'
     testImplementation 'org.springframework.boot:spring-boot-testcontainers'
