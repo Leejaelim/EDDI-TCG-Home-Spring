@@ -2,10 +2,12 @@ package com.example.edditcghomespring.authentication.application;
 
 import com.example.edditcghomespring.authentication.application.request.GenerateOAuthLinkCommand;
 import com.example.edditcghomespring.authentication.application.response.KakaoAccessTokenResponse;
+import com.example.edditcghomespring.authentication.application.response.KakaoUserInfoResult;
 import com.example.edditcghomespring.authentication.application.response.OAuthLinkResult;
 import com.example.edditcghomespring.authentication.domain.service.SocialAuthProvider;
 import com.example.edditcghomespring.authentication.domain.vo.OAuthRequest;
 import com.example.edditcghomespring.authentication.domain.vo.SocialProviderType;
+import com.example.edditcghomespring.authentication.infrastructure.provider.KakaoAuthProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -63,4 +65,21 @@ public class SocialAuthenticationUseCaseImpl
                 ((Number) tokenData.get("expires_in")).longValue()
         );
     }
+
+    @Override
+    public KakaoUserInfoResult requestKakaoUserInfo(String accessToken) {
+        SocialAuthProvider kakaoProvider = providerMap.get(SocialProviderType.KAKAO);
+
+        if (kakaoProvider == null) {
+            throw new IllegalStateException("Kakao Provider 등록 필요");
+        }
+
+        // 타입 캐스팅 필요
+        if (!(kakaoProvider instanceof KakaoAuthProvider)) {
+            throw new IllegalStateException("Kakao Provider 타입 오류");
+        }
+
+        return ((KakaoAuthProvider) kakaoProvider).requestUserInfo(accessToken);
+    }
+
 }

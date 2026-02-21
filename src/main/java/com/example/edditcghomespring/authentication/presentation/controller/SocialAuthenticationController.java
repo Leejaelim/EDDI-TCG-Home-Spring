@@ -2,6 +2,7 @@ package com.example.edditcghomespring.authentication.presentation.controller;
 
 import com.example.edditcghomespring.authentication.application.SocialAuthenticationUseCase;
 import com.example.edditcghomespring.authentication.application.response.KakaoAccessTokenResponse;
+import com.example.edditcghomespring.authentication.application.response.KakaoUserInfoResult;
 import com.example.edditcghomespring.authentication.application.response.OAuthLinkResult;
 import com.example.edditcghomespring.authentication.presentation.dto.request.OAuthLinkRequestForm;
 import com.example.edditcghomespring.authentication.presentation.dto.response.OAuthLinkResponseForm;
@@ -32,9 +33,14 @@ public class SocialAuthenticationController {
     public ResponseEntity<KakaoAccessTokenResponse> requestAccessToken(
             @RequestParam String code
     ) {
-        return ResponseEntity.ok(
-                useCase.requestKakaoAccessToken(code)
-        );
+        KakaoAccessTokenResponse tokenResponse = useCase.requestKakaoAccessToken(code);
+        KakaoUserInfoResult userInfo = useCase.requestKakaoUserInfo(tokenResponse.getAccessToken());
+
+        System.out.println("ID: " + userInfo.getId());
+        System.out.println("Nickname: " + userInfo.getNickname());
+        System.out.println("Email: " + userInfo.getEmail());
+
+        return ResponseEntity.ok(tokenResponse);
     }
 
 }

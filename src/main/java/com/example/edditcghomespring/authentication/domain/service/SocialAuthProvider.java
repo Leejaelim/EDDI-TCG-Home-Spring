@@ -1,5 +1,6 @@
 package com.example.edditcghomespring.authentication.domain.service;
 
+import com.example.edditcghomespring.authentication.application.response.KakaoUserInfoResult;
 import com.example.edditcghomespring.authentication.domain.vo.OAuthRequest;
 import com.example.edditcghomespring.authentication.domain.vo.SocialProviderType;
 
@@ -12,5 +13,7 @@ public interface SocialAuthProvider {
     String generateAuthUrl(OAuthRequest request);
 
     Map<String, Object> requestAccessToken(String code);
+
+    KakaoUserInfoResult requestUserInfo(String accessToken);
 }
 

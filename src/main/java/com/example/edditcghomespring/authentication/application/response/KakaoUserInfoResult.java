@@ -5,10 +5,10 @@ import lombok.RequiredArgsConstructor;
 
 @Getter
 @RequiredArgsConstructor
-public class KakaoAccessTokenResponse {
+public class KakaoUserInfoResult {
 
-    private final String accessToken;
-    private final String refreshToken;
-    private final Long expiresIn;
-
+    private final String id;
+    private final String email;
+    private final String nickname;
+    private final String profileImage;
 }
