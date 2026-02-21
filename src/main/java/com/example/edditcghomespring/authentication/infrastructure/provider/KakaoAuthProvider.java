@@ -1,5 +1,6 @@
 package com.example.edditcghomespring.authentication.infrastructure.provider;
 
+import com.example.edditcghomespring.authentication.application.response.KakaoUserInfoResult;
 import com.example.edditcghomespring.authentication.domain.service.SocialAuthProvider;
 import com.example.edditcghomespring.authentication.domain.vo.OAuthRequest;
 import com.example.edditcghomespring.authentication.domain.vo.SocialProviderType;
@@ -27,6 +28,9 @@ public class KakaoAuthProvider implements SocialAuthProvider {
 
     @Value("${kakao.token-request-uri}")
     private String tokenRequestUri;
+
+    @Value("${kakao.user-info-request-uri}")
+    private String userInfoRequestUri;
 
     @Override
     public SocialProviderType getProviderType() {
@@ -78,5 +82,36 @@ public class KakaoAuthProvider implements SocialAuthProvider {
         }
 
         return response;
+    }
+
+    public KakaoUserInfoResult requestUserInfo(String accessToken) {
+
+        if (accessToken == null || accessToken.isBlank()) {
+            throw new IllegalArgumentException("Access Token 필요");
+        }
+
+        RestTemplate restTemplate = new RestTemplate();
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
+        headers.setBearerAuth(accessToken);
+
+        HttpEntity<String> entity = new HttpEntity<>(headers);
+
+        Map<String, Object> response =
+                restTemplate.postForObject(userInfoRequestUri, entity, Map.class);
+
+        if (response == null || !response.containsKey("id")) {
+            throw new RuntimeException("Kakao 사용자 정보 조회 실패");
+        }
+
+        Map<String, Object> kakaoAccount = (Map<String, Object>) response.get("kakao_account");
+        Map<String, Object> profile = (Map<String, Object>) kakaoAccount.get("profile");
+
+        return new KakaoUserInfoResult(
+                String.valueOf(response.get("id")),
+                (String) kakaoAccount.get("email"),
+                (String) profile.get("nickname"),
+                (String) profile.get("profile_image_url")
+        );
     }
 }
