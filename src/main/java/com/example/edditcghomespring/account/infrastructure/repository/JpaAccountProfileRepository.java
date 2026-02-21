@@ -1,0 +1,14 @@
+package com.example.edditcghomespring.account.infrastructure.repository;
+
+import com.example.edditcghomespring.account.domain.entity.AccountProfile;
+import com.example.edditcghomespring.account.domain.repository.AccountProfileRepository;
+import com.example.edditcghomespring.account.domain.vo.Email;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
+
+import java.util.Optional;
+
+@Repository
+public interface JpaAccountProfileRepository extends JpaRepository<AccountProfile, Long>, AccountProfileRepository {
+    Optional<AccountProfile> findByEmail(Email email);
+}
