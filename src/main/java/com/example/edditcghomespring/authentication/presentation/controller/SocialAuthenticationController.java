@@ -1,6 +1,7 @@
 package com.example.edditcghomespring.authentication.presentation.controller;
 
 import com.example.edditcghomespring.authentication.application.SocialAuthenticationUseCase;
+import com.example.edditcghomespring.authentication.application.response.KakaoAccessTokenResponse;
 import com.example.edditcghomespring.authentication.application.response.OAuthLinkResult;
 import com.example.edditcghomespring.authentication.presentation.dto.request.OAuthLinkRequestForm;
 import com.example.edditcghomespring.authentication.presentation.dto.response.OAuthLinkResponseForm;
@@ -26,4 +27,14 @@ public class SocialAuthenticationController {
                 OAuthLinkResponseForm.from(result)
         );
     }
+
+    @GetMapping("/request-access-token-after-redirection")
+    public ResponseEntity<KakaoAccessTokenResponse> requestAccessToken(
+            @RequestParam String code
+    ) {
+        return ResponseEntity.ok(
+                useCase.requestKakaoAccessToken(code)
+        );
+    }
+
 }

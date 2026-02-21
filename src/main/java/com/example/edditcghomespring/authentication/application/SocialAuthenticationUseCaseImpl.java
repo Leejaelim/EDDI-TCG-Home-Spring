@@ -1,6 +1,7 @@
 package com.example.edditcghomespring.authentication.application;
 
 import com.example.edditcghomespring.authentication.application.request.GenerateOAuthLinkCommand;
+import com.example.edditcghomespring.authentication.application.response.KakaoAccessTokenResponse;
 import com.example.edditcghomespring.authentication.application.response.OAuthLinkResult;
 import com.example.edditcghomespring.authentication.domain.service.SocialAuthProvider;
 import com.example.edditcghomespring.authentication.domain.vo.OAuthRequest;
@@ -37,5 +38,29 @@ public class SocialAuthenticationUseCaseImpl
         String url = provider.generateAuthUrl(request);
 
         return new OAuthLinkResult(url);
+    }
+
+    @Override
+    public KakaoAccessTokenResponse requestKakaoAccessToken(String code) {
+
+        if (code == null || code.isBlank()) {
+            throw new IllegalArgumentException("authorization code 필요");
+        }
+
+        SocialAuthProvider kakaoProvider =
+                providerMap.get(SocialProviderType.KAKAO);
+
+        if (kakaoProvider == null) {
+            throw new IllegalStateException("Kakao Provider 등록 필요");
+        }
+
+        Map<String, Object> tokenData =
+                kakaoProvider.requestAccessToken(code);
+
+        return new KakaoAccessTokenResponse(
+                (String) tokenData.get("access_token"),
+                (String) tokenData.get("refresh_token"),
+                ((Number) tokenData.get("expires_in")).longValue()
+        );
     }
 }
