@@ -101,10 +101,8 @@ public class SocialAuthenticationUseCaseImpl
 
         String temporaryToken = UUID.randomUUID().toString();
 
-        String redisKey = buildTemporaryKey(temporaryToken);
-
         redisCacheRepository.setKeyAndValue(
-                redisKey,
+                temporaryToken,
                 socialAccessToken,
                 TEMP_TOKEN_TTL
         );
@@ -116,10 +114,6 @@ public class SocialAuthenticationUseCaseImpl
                 loginType,
                 temporaryToken
         );
-    }
-
-    private String buildTemporaryKey(String uuid) {
-        return "temp:oauth:" + uuid;
     }
 
     @Override
