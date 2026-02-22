@@ -157,12 +157,16 @@ public class SocialAuthenticationUseCaseImpl
 
         // 기존 회원이면 바로 로그인 처리 (임시 토큰 없음)
         if (isSignedUp) {
+            String userToken = UUID.randomUUID().toString();
+
+            Long accountId = accountProfileRepository.findAccountIdByEmail(email);
+
             return new SocialLoginResult(
                     false,                 // 신규 아님
                     email.getValue(),
                     userInfo.getNickname(),
                     providerType,
-                    null                   // temporaryToken 없음
+                    userToken
             );
         }
 

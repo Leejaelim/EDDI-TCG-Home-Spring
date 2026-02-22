@@ -14,5 +14,5 @@ public class SocialLoginResult {
     private final SocialProviderType loginType;
 
     @JsonIgnore
-    private final String temporaryToken;  // 외부로 나가지 않음않음
+    private final String token;  // 외부로 나가지 않음
 }

@@ -46,12 +46,16 @@ public class SocialAuthenticationController {
                         code
                 );
 
-        if (result.isNewUser() && result.getTemporaryToken() != null) {
-            ResponseCookie cookie = ResponseCookie.from("temporaryToken", result.getTemporaryToken())
+        if (result.getToken() != null) {
+            long maxAge = result.isNewUser() ? 5 * 60 : 12 * 60 * 60;
+
+            ResponseCookie cookie = ResponseCookie.from(
+                            result.isNewUser() ? "temporaryToken" : "userToken",
+                            result.getToken())
                     .httpOnly(true)
                     .secure(true)
                     .path("/")
-                    .maxAge(5 * 60) // 5분
+                    .maxAge(maxAge)
                     .sameSite("Strict")
                     .build();
 
