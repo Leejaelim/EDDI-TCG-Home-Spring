@@ -24,15 +24,19 @@ public class AccountProfile {
     @Embedded
     private Nickname nickname;
 
-    public AccountProfile(Email email, Nickname nickname) {
-        if (email == null) {
-            throw new IllegalArgumentException("Email은 필수입니다.");
-        }
-        if (nickname == null) {
-            throw new IllegalArgumentException("Nickname은 필수입니다.");
-        }
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "account_id")
+    private Account account;
 
+    public AccountProfile(Email email, Nickname nickname) {
+        if (email == null) throw new IllegalArgumentException("Email은 필수입니다.");
+        if (nickname == null) throw new IllegalArgumentException("Nickname은 필수입니다.");
         this.email = email;
         this.nickname = nickname;
+    }
+
+    public void setAccount(Account account) {
+        if (account == null) throw new IllegalArgumentException("Account은 필수입니다.");
+        this.account = account;
     }
 }

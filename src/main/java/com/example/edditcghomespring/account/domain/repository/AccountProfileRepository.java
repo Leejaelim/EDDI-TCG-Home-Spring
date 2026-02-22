@@ -9,4 +9,5 @@ import java.util.Optional;
 public interface AccountProfileRepository {
     boolean existsByEmail(Email email);
     Optional<AccountProfile> findByEmail(Email email);
+    <S extends AccountProfile> S save(S profile);
 }
