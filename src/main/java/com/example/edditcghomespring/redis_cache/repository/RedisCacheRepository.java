@@ -15,9 +15,9 @@ public interface RedisCacheRepository {
     void setKeyAndValue(String key, String value, Duration ttl);
 
     /**
-     * key 기반 value 조회
+     * key 기반 value 조회 (타입 안전 Generic)
      */
-    String getValueByKey(String key);
+    <T> T getValueByKey(String key, Class<T> clazz);
 
     /**
      * key 존재 여부 확인
