@@ -9,7 +9,9 @@ import com.example.edditcghomespring.authentication.application.response.SocialL
 import com.example.edditcghomespring.authentication.domain.vo.SocialProviderType;
 import com.example.edditcghomespring.authentication.presentation.dto.request.OAuthLinkRequestForm;
 import com.example.edditcghomespring.authentication.presentation.dto.response.OAuthLinkResponseForm;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -35,7 +37,8 @@ public class SocialAuthenticationController {
 
     @GetMapping("/request-access-token-after-redirection")
     public ResponseEntity<SocialLoginResult> requestAccessToken(
-            @RequestParam String code
+            @RequestParam String code,
+            HttpServletResponse response
     ) {
         SocialLoginResult result =
                 authenticationUseCase.loginAfterRedirect(
@@ -43,6 +46,19 @@ public class SocialAuthenticationController {
                         code
                 );
 
+        if (result.isNewUser() && result.getTemporaryToken() != null) {
+            ResponseCookie cookie = ResponseCookie.from("temporaryToken", result.getTemporaryToken())
+                    .httpOnly(true)
+                    .secure(true)
+                    .path("/")
+                    .maxAge(5 * 60) // 5분
+                    .sameSite("Strict")
+                    .build();
+
+            response.addHeader("Set-Cookie", cookie.toString());
+        }
+
+        // 3. Body는 최소화 (optional)
         return ResponseEntity.ok(result);
     }
 
